@@ -1,5 +1,7 @@
 const express = require('express')
 const cors = require('cors')
+require('dotenv').config()
+
 const UserRoutes = require('./routes/userRoutes')
 
 const app = express()
@@ -17,4 +19,4 @@ app.get('/api/status', (req, res) => {
     })
 })
 
-module.exports = {app}
+module.exports = app
