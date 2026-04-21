@@ -54,6 +54,21 @@ const User = {
     return rows[0]
   },
 
+  //1.2 Editar usuarios
+  update: async (id, data) => {
+        const query = `UPDATE users SET first_name = $1, last_name = $2, status = $3, id_rol = $4 WHERE id_user = $5 RETURNING *`
+        const values = [data.first_name, data.last_name, data.status, data.id_rol, id]
+        const { rows } = await pool.query(query, values)
+        return rows[0]
+    },
+
+  delete: async(id, data) => {
+    const query = `UPDATE users SET status = 'deleted' WHERE id_user = $1`
+    await pool.query(query, [id])
+  },
+
+
+
   // Método 3: Búsqueda para autenticación
   findByEmail: async (email) => {
     const query = 'SELECT * FROM users WHERE email = $1'
