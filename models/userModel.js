@@ -7,11 +7,7 @@ const User = {
     try {
       await client.query('BEGIN') 
 
-      const userQuery = `
-        INSERT INTO users (dni, first_name, last_name, email, password, status, id_rol)
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
-        RETURNING id_user
-      `
+      const userQuery = `INSERT INTO users (dni, first_name, last_name, email, password, status, id_rol)VALUES ($1, $2, $3, $4, $5, $6, $7)RETURNING id_user`
       const userValues = [
         userData.dni, userData.first_name, userData.last_name, 
         userData.email, userData.password, userData.status, userData.id_rol
@@ -19,10 +15,7 @@ const User = {
       const userRes = await client.query(userQuery, userValues)
       const userId = userRes.rows[0].id_user
 
-      const driverQuery = `
-        INSERT INTO drivers (id_user, id_line, adress, admission_date, license_type, license_expiration_date)
-        VALUES ($1, $2, $3, $4, $5, $6)
-      `
+      const driverQuery = `INSERT INTO drivers (id_user, id_line, adress, admission_date, license_type, license_expiration_date)VALUES ($1, $2, $3, $4, $5, $6)`
       const driverValues = [
         userId, driverData.id_line, driverData.adress, 
         driverData.admission_date, driverData.license_type, driverData.license_expiration_date
@@ -39,18 +32,64 @@ const User = {
     }
   },
 
+  createWithEmployee: async (userData, employeeData) => {
+  const client = await pool.connect()
+  try {
+    await client.query('BEGIN')
+
+    const userQuery = 'INSERT INTO users (dni, first_name, last_name, email, password, status, id_rol) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id_user'
+    const userValues = [userData.dni, userData.first_name, userData.last_name, userData.email, userData.password, userData.status, userData.id_rol]
+    const userRes = await client.query(userQuery, userValues)
+    const userId = userRes.rows[0].id_user
+
+    // Usamos las columnas exactas: employment_type y duration
+    const empQuery = 'INSERT INTO employees (id_user, employment_type, duration) VALUES ($1, $2, $3)'
+    const empValues = [userId, employeeData.employment_type, employeeData.duration]
+    await client.query(empQuery, empValues)
+
+    await client.query('COMMIT')
+    return { id_user: userId, message: 'Usuario y empleado registrados con éxito' }
+  } catch (error) {
+    await client.query('ROLLBACK')
+    throw error
+  } finally {
+    client.release()
+  }
+},
+
   // Método 2: Registro de usuarios administrativos estándar
   create: async (userData) => {
-    const query = `
-      INSERT INTO users (dni, first_name, last_name, email, password, status, id_rol)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
-      RETURNING id_user, email
-    `
+    const query = `INSERT INTO users (dni, first_name, last_name, email, password, status, id_rol)VALUES ($1, $2, $3, $4, $5, $6, $7)RETURNING id_user, email`
     const values = [
       userData.dni, userData.first_name, userData.last_name, 
       userData.email, userData.password, userData.status, userData.id_rol
     ]
     const { rows } = await pool.query(query, values)
+    return rows[0]
+  },
+
+  getAll: async () => {
+    const query = `
+        SELECT 
+            u.id_user, 
+            u.dni, 
+            u.first_name, 
+            u.last_name, 
+            u.email, 
+            u.status, 
+            r.rol_name 
+        FROM users u 
+        INNER JOIN roles r ON u.id_rol = r.id_rol 
+        WHERE u.status != $1 
+        ORDER BY u.id_user DESC
+    `
+    const { rows } = await pool.query(query, ['deleted'])
+    return rows
+},
+
+  getById: async (id) => {
+    const query = 'SELECT * FROM users WHERE id_user = $1 AND status != \'deleted\''
+    const { rows } = await pool.query(query, [id])
     return rows[0]
   },
 
@@ -66,8 +105,6 @@ const User = {
     const query = `UPDATE users SET status = 'deleted' WHERE id_user = $1`
     await pool.query(query, [id])
   },
-
-
 
   // Método 3: Búsqueda para autenticación
   findByEmail: async (email) => {

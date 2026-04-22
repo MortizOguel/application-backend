@@ -4,7 +4,7 @@ const User = require('../models/userModel')
 require('dotenv').config()
 
 const RegisterUser = async (req, res) => {
-  const { userData, driverData, isDriver } = req.body
+  const { userData, driverData, isDriver, employeeData, isEmployee } = req.body
 
   try {
     // Encriptacion de seguridad antes de persistir
@@ -15,11 +15,15 @@ const RegisterUser = async (req, res) => {
       // Flujo combinado para conductores
       const result = await User.createWithDriver(userData, driverData)
       return res.status(201).json(result)
-    } else {
-      // Flujo estandar para otros roles
-      // (Aqui llamarias a un metodo User.create simple)
-      res.status(201).json({ message: 'Usuario administrativo creado' })
+    } 
+    
+    if (isEmployee && employeeData) {
+      const result = await User.createWithEmployee(userData, employeeData)
+      return res.status(201).json(result)
     }
+
+    res.status(201).json({ message: 'Usuario administrativo creado' })
+    
   } catch (error) {
     res.status(500).json({ message: 'Error en el registro institucional', error: error.message })
   }
