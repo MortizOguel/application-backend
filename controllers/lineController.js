@@ -30,7 +30,7 @@ const GetLines = async (req, res) => {
 const UpdateLines = async (req, res) =>{
         try {
             const {id} = req.params
-            const updatedLine = await Line.updated(req, body)
+            const updatedLine = await Line.update(id, req.body)
             res.status(200).json({
                 message: 'Linea actualizada correctamente',
                 data: updatedLine
@@ -46,13 +46,14 @@ const UpdateLines = async (req, res) =>{
 const DeleteLines = async(req, res) => {
         try{
             const {id} = req.params
-            await Line.deleted(req, body )
+            await Line.delete(id, req.body)
             res.status(200).json({
                 message: 'Linea eliminada exitosamente'
             })
         }catch(error){
             res.status(500).json({
-                message: 'Error al eliminar la linea'
+                message: 'Error al eliminar la linea',
+                error: error.message
             })
         }
 }

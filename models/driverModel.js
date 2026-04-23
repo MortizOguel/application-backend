@@ -11,14 +11,20 @@ const Driver = {
     },
 
     update: async(id_user, data) => {
-        const query = `UPDATE drivers SET id_line = $1, adress = $2, license_type = $3, license_expiration_date = $4 WHERE id_user = $5 RETURNING *`
-        const values = [data.id_line, data.adress, data.license_type, data.license_expiration_date, id_user]
+        const query = `UPDATE drivers SET id_line = $1, adress = $2, license_type = $3, license_expiration_date = $4, admission_date = $5 WHERE id_user = $6 RETURNING *`
+        const values = [data.id_line, data.adress, data.license_type, data.license_expiration_date, data.admission_date, id_user
+        ];
         const { rows } = await pool.query(query, values)
         return rows[0]
     },
 
+    delete: async (id_user) => {
+        const query = 'DELETE FROM drivers WHERE id_user = $1';
+        await pool.query(query, [id_user]);
+    },
+
     getAllDetailed: async() => {
-        const query = `SELECT d.*, u.first_name, u.last_name, l.name as line_nameFROM drivers dJOIN users u ON d.id_user = u.id_userJOIN lines l ON d.id_line = l.id_line`
+        const query = `SELECT d.*, u.first_name, u.last_name, l.name as line_name FROM drivers dJOIN users u ON d.id_user = u.id_userJOIN lines l ON d.id_line = l.id_line`
         const { rows } = await pool.query(query)
         return rows
     }
