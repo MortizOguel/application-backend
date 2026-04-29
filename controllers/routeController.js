@@ -26,6 +26,7 @@ const UpdateRoute = async(req, res) => {
             message: 'Ruta actualizada correctamente'
         }) 
     }catch(error){
+        console.error('Error en UpdateRoute:', error)
         res.status(500).json({
             message: 'Error interno en el servidor al actualizar la ruta',
             error: error.message    
@@ -51,4 +52,16 @@ const DeleteRoute = async(req, res) => {
     }
 }
 
-module.exports = { CreateRoute, UpdateRoute, DeleteRoute }
+const GetRoutes = async (req, res) => {
+    try {
+        const routes = await Route.getAll()
+        res.status(200).json(routes)
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error interno del servidor al obtener las rutas',
+            error: error.message
+        })
+    }
+}
+
+module.exports = { CreateRoute, UpdateRoute, DeleteRoute, GetRoutes }

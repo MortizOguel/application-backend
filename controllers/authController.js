@@ -13,6 +13,9 @@ const RegisterUser = async (req, res) => {
 
     if (isDriver && driverData) {
       // Flujo combinado para conductores
+      console.log('--- REGISTER DRIVER DATA ---');
+      console.log(JSON.stringify({...driverData, license_photo: driverData.license_photo ? '(base64 string present)' : null}));
+      
       const result = await User.createWithDriver(userData, driverData)
       return res.status(201).json(result)
     } 
@@ -22,7 +25,8 @@ const RegisterUser = async (req, res) => {
       return res.status(201).json(result)
     }
 
-    res.status(201).json({ message: 'Usuario administrativo creado' })
+    const result = await User.create(userData)
+    res.status(201).json({ message: 'Usuario administrativo creado', data: result })
     
   } catch (error) {
     res.status(500).json({ message: 'Error en el registro institucional', error: error.message })
@@ -58,7 +62,15 @@ const LoginUser = async (req, res) => {
 
     res.status(200).json({
       message: 'Autenticación exitosa',
-      token: token
+      token: token,
+      user: {
+        id: user.id_user,
+        email: user.email,
+        name: `${user.first_name} ${user.last_name}`.trim(),
+        first_name: user.first_name,
+        last_name: user.last_name,
+        id_rol: user.id_rol
+      }
     })
   } catch (error) {
     res.status(500).json({

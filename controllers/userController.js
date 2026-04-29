@@ -1,5 +1,6 @@
 const User = require('../models/userModel')
 const Driver = require('../models/driverModel')
+const bcrypt = require('bcrypt')
 
 const UpdateUser = async(req, res) => {
     try{
@@ -12,7 +13,11 @@ const UpdateUser = async(req, res) => {
 
         const updatedUser = await User.update(id, userData)
 
-        if(driverData) await Driver.update(id, driverData)
+        if(driverData) {
+            console.log('--- UPDATE DRIVER DATA CALLED ---');
+            console.log('license_photo length:', driverData.license_photo ? driverData.license_photo.length : 0);
+            await Driver.update(id, driverData)
+        }
 
         if (employeeData) await Employee.update(id, employeeData)
 
@@ -74,4 +79,25 @@ const GetUserById = async (req, res) => {
 
 
 
-module.exports = { UpdateUser, DeleteUser, GetUsers, GetUserById }
+const ChangePassword = async (req, res) => {
+  try {
+    const { userId, currentPassword, newPassword } = req.body
+    const user = await User.getById(userId)
+
+    if (!user) return res.status(404).json({ msg: 'Usuario no encontrado' })
+
+    const isValid = await bcrypt.compare(currentPassword, user.password)
+    if (!isValid) return res.status(401).json({ msg: 'La contraseña actual es incorrecta' })
+
+    const salt = await bcrypt.genSalt(10)
+    const hashed = await bcrypt.hash(newPassword, salt)
+
+    await User.updatePassword(userId, hashed)
+
+    res.status(200).json({ msg: 'Contraseña actualizada exitosamente' })
+  } catch (error) {
+    res.status(500).json({ msg: 'Error al cambiar contraseña', error: error.message })
+  }
+}
+
+module.exports = { UpdateUser, DeleteUser, GetUsers, GetUserById, ChangePassword }

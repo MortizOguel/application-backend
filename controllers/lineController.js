@@ -8,6 +8,7 @@ const RegisterLine = async (req, res) => {
             data: NewLine
         })
     } catch (error) {
+        console.error('Error en RegisterLine:', error)
         res.status(500).json({
             message: 'Error del servidor al registrar la linea',
             error: error.message
@@ -46,11 +47,12 @@ const UpdateLines = async (req, res) =>{
 const DeleteLines = async(req, res) => {
         try{
             const {id} = req.params
-            await Line.delete(id, req.body)
+            await Line.delete(id)
             res.status(200).json({
                 message: 'Linea eliminada exitosamente'
             })
         }catch(error){
+            console.error('Error al eliminar linea:', error);
             res.status(500).json({
                 message: 'Error al eliminar la linea',
                 error: error.message

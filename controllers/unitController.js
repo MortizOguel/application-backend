@@ -15,9 +15,9 @@ const createUnit = async (req, res) => {
 const UpdateUnit = async (req, res) => {
   try{
     const {id} = req.params;
-    const {plate, id_line, id_model, status} = req.body;
+    const {plate, id_line, id_model, status, foto} = req.body;
 
-    const updatedUnit = await Unit.update(id, {plate, id_line, id_model, status});
+    const updatedUnit = await Unit.update(id, {plate, id_line, id_model, status, foto});
 
     if (!updatedUnit) {
       return res.status(404).json({ message: 'La unidad no fue encontrada' });
@@ -57,4 +57,16 @@ const DeleteUnit = async (req, res) => {
   }
 };
 
-module.exports = { createUnit, UpdateUnit, DeleteUnit };
+const GetUnits = async (req, res) => {
+  try {
+    const units = await Unit.getAll()
+    res.status(200).json(units)
+  } catch (error) {
+    res.status(500).json({ 
+      message: 'Error al obtener unidades',
+      error: error.message 
+    })
+  }
+}
+
+module.exports = { createUnit, UpdateUnit, DeleteUnit, GetUnits };

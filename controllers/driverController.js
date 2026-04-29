@@ -1,4 +1,5 @@
 const Driver = require('../models/driverModel')
+const User = require('../models/userModel')
 
 const registerDriver = async (req, res) => {
   try {
@@ -41,7 +42,13 @@ const updateDriverData = async (req, res) => {
 const DeleteDriver = async (req, res) => {
     try {
         const { id } = req.params;
+        
+        // 1. Eliminar conductor de la tabla drivers
         await Driver.delete(id);
+        
+        // 2. Marcar usuario como eliminado en la tabla users
+        await User.delete(id);
+        
         res.status(200).json({
             message: 'El rol de conductor ha sido removido exitosamente'
         });
