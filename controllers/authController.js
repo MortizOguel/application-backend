@@ -65,6 +65,7 @@ const LoginUser = async (req, res) => {
       token: token,
       user: {
         id: user.id_user,
+        dni: user.dni,
         email: user.email,
         name: `${user.first_name} ${user.last_name}`.trim(),
         first_name: user.first_name,
