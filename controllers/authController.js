@@ -41,7 +41,7 @@ const LoginUser = async (req, res) => {
     
     if (!user) {
       return res.status(404).json({
-        message: 'Usuario no encontrado en el sistema institucional'
+        message: 'Correo o contraseña incorrectos'
       })
     }
 
