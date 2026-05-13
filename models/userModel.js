@@ -98,8 +98,8 @@ const User = {
 
   //1.2 Editar usuarios
   update: async (id, data) => {
-        const query = `UPDATE users SET first_name = $1, last_name = $2, status = $3, id_rol = $4, photo = COALESCE($5, photo) WHERE id_user = $6 RETURNING *`
-        const values = [data.first_name, data.last_name, data.status, data.id_rol, data.photo || null, id]
+        const query = `UPDATE users SET first_name = $1, last_name = $2, email = $3, status = $4, id_rol = $5, photo = COALESCE($6, photo) WHERE id_user = $7 RETURNING *`
+        const values = [data.first_name, data.last_name, data.email, data.status, data.id_rol, data.photo || null, id]
         const { rows } = await pool.query(query, values)
         return rows[0]
     },

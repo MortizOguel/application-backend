@@ -43,6 +43,12 @@ const DeleteDriver = async (req, res) => {
     try {
         const { id } = req.params;
         
+        // Verificar que el usuario existe
+        const userExists = await User.getById(id);
+        if (!userExists) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+        
         // 1. Eliminar conductor de la tabla drivers
         await Driver.delete(id);
         

@@ -22,20 +22,41 @@ const Unit = {
     const { rows } = await pool.query(query, values);
     return rows[0];
   },
-    delete: async (id) => {
-    const query = 'DELETE FROM units WHERE id_unit = $1 RETURNING *';
-    const { rows } = await pool.query(query, [id]);
-    return rows.length > 0; // Retorna true si un registro fue efectivamente eliminado
-    },
+delete: async (id) => {
+    try {
+        const numericId = parseInt(id, 10);
+        if (isNaN(numericId)) {
+            throw new Error('ID de unidad inválido: debe ser un número');
+        }
+        const query = `UPDATE units SET status = 'inactive' WHERE id_unit = $1 RETURNING *`;
+        const { rows } = await pool.query(query, [numericId]);
+        return rows.length > 0;
+    } catch (error) {
+        console.error('Error en delete de unidad:', error.message);
+        throw error;
+    }
+},
     getAll: async () => {
     const query = `
       SELECT u.*, m.brand as marca, m.model as modelo 
       FROM units u 
       LEFT JOIN models m ON u.id_model = m.id_model 
+      WHERE u.status != 'inactive'
       ORDER BY u.id_unit ASC
     `
     const { rows } = await pool.query(query)
     return rows
+    },
+
+    getById: async (id) => {
+        const query = `
+          SELECT u.*, m.brand as marca, m.model as modelo 
+          FROM units u 
+          LEFT JOIN models m ON u.id_model = m.id_model 
+          WHERE u.id_unit = $1 AND u.status != 'inactive'
+        `
+        const { rows } = await pool.query(query, [id])
+        return rows[0]
     },
 }
 

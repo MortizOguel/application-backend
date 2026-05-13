@@ -60,4 +60,15 @@ const DeleteLines = async(req, res) => {
         }
 }
 
-module.exports = {RegisterLine, GetLines, UpdateLines, DeleteLines}
+const GetLineById = async (req, res) => {
+    try {
+        const { id } = req.params
+        const line = await Line.getById(id)
+        if (!line) return res.status(404).json({ message: 'Línea no encontrada' })
+        res.status(200).json(line)
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener línea', error: error.message })
+    }
+}
+
+module.exports = {RegisterLine, GetLines, GetLineById, UpdateLines, DeleteLines}

@@ -34,6 +34,12 @@ const Line = {
     getAll: async () => {
         const { rows } = await pool.query('SELECT * FROM lines ORDER BY id_line ASC')
         return rows
+    },
+
+    getById: async (id) => {
+        const query = 'SELECT * FROM lines WHERE id_line = $1'
+        const { rows } = await pool.query(query, [id])
+        return rows[0]
     }
 }
 

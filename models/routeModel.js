@@ -9,10 +9,10 @@ const Route = {
             data.origin, 
             data.destination, 
             data.distance, 
-            data.status, 
-            JSON.stringify(data.puntosControl || []), 
-            JSON.stringify(data.coordenadasInicio || null), 
-            JSON.stringify(data.coordenadasLlegada || null),
+            data.status || 'active', 
+            JSON.stringify(data.puntosControl || data.puntos_control || []), 
+            JSON.stringify(data.coordenadasInicio || data.coordenadas_inicio || null), 
+            JSON.stringify(data.coordenadasLlegada || data.coordenadas_llegada || null),
             data.details || ''
         ];
         const { rows } = await pool.query(query, values);
@@ -27,10 +27,10 @@ const Route = {
             data.origin, 
             data.destination, 
             data.distance, 
-            data.status, 
-            JSON.stringify(data.puntosControl || []), 
-            JSON.stringify(data.coordenadasInicio || null), 
-            JSON.stringify(data.coordenadasLlegada || null),
+            data.status || 'active', 
+            JSON.stringify(data.puntosControl || data.puntos_control || []), 
+            JSON.stringify(data.coordenadasInicio || data.coordenadas_inicio || null), 
+            JSON.stringify(data.coordenadasLlegada || data.coordenadas_llegada || null),
             data.details || '',
             id
         ]
@@ -51,6 +51,21 @@ const Route = {
             coordenadasInicio: r.coordenadas_inicio,
             coordenadasLlegada: r.coordenadas_llegada
         }))
+    },
+
+    getById: async (id) => {
+        const query = 'SELECT * FROM routes WHERE id_route = $1'
+        const { rows } = await pool.query(query, [id])
+        if (rows[0]) {
+            const r = rows[0]
+            return {
+                ...r,
+                puntosControl: r.puntos_control,
+                coordenadasInicio: r.coordenadas_inicio,
+                coordenadasLlegada: r.coordenadas_llegada
+            }
+        }
+        return null
     },
 }
 

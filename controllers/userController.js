@@ -1,11 +1,12 @@
 const User = require('../models/userModel')
 const Driver = require('../models/driverModel')
+const Employee = require('../models/employeeModel')
 const bcrypt = require('bcrypt')
 
 const UpdateUser = async(req, res) => {
     try{
         const { id } = req.params
-        const { userData, driverData, employeeData } = req.body
+        const { userData, driverData, employeeData, isDriver } = req.body
 
         if (!userData) {
             return res.status(400).json({ message: 'No se proporcionaron datos de usuario (userData) para actualizar' });
@@ -13,22 +14,23 @@ const UpdateUser = async(req, res) => {
 
         const updatedUser = await User.update(id, userData)
 
-        if(driverData) {
+        if (isDriver && driverData) {
             console.log('--- UPDATE DRIVER DATA CALLED ---');
             console.log('license_photo length:', driverData.license_photo ? driverData.license_photo.length : 0);
             await Driver.update(id, driverData)
         }
 
-        if (employeeData) await Employee.update(id, employeeData)
+        if (employeeData) {
+            const existingEmployee = await Employee.getByUserId(id)
+            if (existingEmployee) {
+                await Employee.update(id, employeeData)
+            }
+        }
 
-        if (employeeData && typeof Employee !== 'undefined') {
-            await Employee.update(id, employeeData);
-        }   
-    
-    res.status(200).json({
-        message: 'Usuario actualizado correctamente',
-        data: updatedUser
-    })
+        res.status(200).json({
+            message: 'Usuario actualizado correctamente',
+            data: updatedUser
+        })
     } catch(error){
         res.status(500).json({
             message: 'Fallo interno en el servidor a la hora de actualizar el usuario',

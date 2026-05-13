@@ -64,4 +64,15 @@ const GetRoutes = async (req, res) => {
     }
 }
 
-module.exports = { CreateRoute, UpdateRoute, DeleteRoute, GetRoutes }
+const GetRouteById = async (req, res) => {
+    try {
+        const { id } = req.params
+        const route = await Route.getById(id)
+        if (!route) return res.status(404).json({ message: 'Ruta no encontrada' })
+        res.status(200).json(route)
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener ruta', error: error.message })
+    }
+}
+
+module.exports = { CreateRoute, UpdateRoute, DeleteRoute, GetRoutes, GetRouteById }
