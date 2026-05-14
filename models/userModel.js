@@ -80,9 +80,9 @@ const User = {
             u.status, 
             u.id_rol,
             u.photo,
-            r.rol_name 
+            COALESCE(r.rol_name, 'Sin rol') as rol_name
         FROM users u 
-        INNER JOIN roles r ON u.id_rol = r.id_rol 
+        LEFT JOIN roles r ON u.id_rol = r.id_rol 
         WHERE u.status != $1 
         ORDER BY u.id_user DESC
     `

@@ -49,14 +49,11 @@ const DeleteDriver = async (req, res) => {
             return res.status(404).json({ message: 'Usuario no encontrado' });
         }
         
-        // 1. Eliminar conductor de la tabla drivers
-        await Driver.delete(id);
-        
-        // 2. Marcar usuario como eliminado en la tabla users
+        // Eliminación lógica: solo marcar el usuario como eliminado
         await User.delete(id);
         
         res.status(200).json({
-            message: 'El rol de conductor ha sido removido exitosamente'
+            message: 'El conductor ha sido eliminado exitosamente'
         });
     } catch (error) {
         res.status(500).json({

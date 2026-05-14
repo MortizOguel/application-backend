@@ -66,7 +66,7 @@ const Driver = {
     },
 
     getAllDetailed: async() => {
-        const query = `SELECT d.*, u.first_name, u.last_name, u.status, u.photo, l.name as line_name FROM drivers d JOIN users u ON d.id_user = u.id_user LEFT JOIN lines l ON d.id_line = l.id_line`
+        const query = `SELECT d.*, u.first_name, u.last_name, u.email, u.status, u.photo, u.id_rol, l.name as line_name FROM drivers d JOIN users u ON d.id_user = u.id_user LEFT JOIN lines l ON d.id_line = l.id_line WHERE u.status != 'deleted'`
         const { rows } = await pool.query(query)
         return rows
     }
