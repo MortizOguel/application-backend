@@ -38,7 +38,7 @@ const Service = {
             LEFT JOIN units u ON s.id_unit = u.id_unit
             LEFT JOIN models m ON u.id_model = m.id_model
             LEFT JOIN routes r ON s.id_route = r.id_route
-            LEFT JOIN drivers dr ON s.id_driver = dr.id_user
+            LEFT JOIN drivers dr ON s.id_driver = dr.id_driver
             LEFT JOIN users us ON dr.id_user = us.id_user
             LEFT JOIN lines l ON s.id_line = l.id_line
             ORDER BY s.start_date DESC
@@ -61,7 +61,7 @@ const Service = {
             LEFT JOIN units u ON s.id_unit = u.id_unit
             LEFT JOIN models m ON u.id_model = m.id_model
             LEFT JOIN routes r ON s.id_route = r.id_route
-            LEFT JOIN drivers dr ON s.id_driver = dr.id_user
+            LEFT JOIN drivers dr ON s.id_driver = dr.id_driver
             LEFT JOIN users us ON dr.id_user = us.id_user
             LEFT JOIN lines l ON s.id_line = l.id_line
             WHERE s.id_service = $1
