@@ -118,7 +118,8 @@ const getDriversWithUnits = async (req, res) => {
           status: row.unit_status,
           foto: row.foto,
           marca: row.unit_marca,
-          modelo: row.unit_modelo
+          modelo: row.unit_modelo,
+          line_name: row.unit_line_name || '—'
         })
       }
     }
