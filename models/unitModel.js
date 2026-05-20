@@ -61,7 +61,7 @@ delete: async (id) => {
         if (isNaN(numericId)) {
             throw new Error('ID de unidad inválido: debe ser un número')
         }
-        const query = `DELETE FROM units WHERE id_unit = $1 RETURNING *`
+        const query = `UPDATE units SET status = 'deleted' WHERE id_unit = $1 AND status != 'deleted' RETURNING *`
         const { rows } = await pool.query(query, [numericId])
         return rows.length > 0
     } catch (error) {
@@ -75,6 +75,7 @@ delete: async (id) => {
       FROM units u 
       LEFT JOIN models m ON u.id_model = m.id_model
       LEFT JOIN lines l ON u.id_line = l.id_line
+      WHERE u.status != 'deleted'
       ORDER BY u.id_unit ASC
     `
     const { rows } = await pool.query(query)
@@ -86,7 +87,7 @@ delete: async (id) => {
           SELECT u.*, m.brand as marca, m.model as modelo 
           FROM units u 
           LEFT JOIN models m ON u.id_model = m.id_model 
-          WHERE u.id_unit = $1
+          WHERE u.id_unit = $1 AND u.status != 'deleted'
         `
         const { rows } = await pool.query(query, [id])
         return rows[0]
