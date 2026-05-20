@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createUnit, UpdateUnit, DeleteUnit, GetUnits, GetUnitById } = require('../controllers/unitController');
+const { createUnit, UpdateUnit, DeleteUnit, GetUnits, GetUnitById, AssignDriverToUnit } = require('../controllers/unitController');
 const { VerifyToken } = require('../middleware/auth');
 
 router.get('/', GetUnits);
@@ -8,5 +8,6 @@ router.get('/:id', VerifyToken, GetUnitById);
 router.post('/', VerifyToken, createUnit);
 router.put('/:id', VerifyToken, UpdateUnit);
 router.delete('/:id', VerifyToken, DeleteUnit);
+router.patch('/:id/driver', VerifyToken, AssignDriverToUnit);
 
 module.exports = router;

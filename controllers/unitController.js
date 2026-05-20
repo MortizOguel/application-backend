@@ -1,4 +1,5 @@
 const Unit = require('../models/unitModel');
+const Driver = require('../models/driverModel');
 
 const createUnit = async (req, res) => {
   try {
@@ -80,4 +81,46 @@ const GetUnitById = async (req, res) => {
   }
 }
 
-module.exports = { createUnit, UpdateUnit, DeleteUnit, GetUnits, GetUnitById };
+const AssignDriverToUnit = async (req, res) => {
+  try {
+    const { id } = req.params
+    const { id_driver } = req.body
+
+    const unit = await Unit.getById(id)
+    if (!unit) {
+      return res.status(404).json({ message: 'Unidad no encontrada' })
+    }
+
+    if (id_driver && unit.id_driver !== null && unit.id_driver !== undefined) {
+      return res.status(409).json({
+        message: 'La unidad ya tiene un conductor asignado. Desasígnela primero.'
+      })
+    }
+
+    if (id_driver) {
+      const query = 'SELECT * FROM drivers WHERE id_driver = $1'
+      const { pool } = require('../config/db')
+      const { rows } = await pool.query(query, [id_driver])
+      if (rows.length === 0) {
+        return res.status(404).json({ message: 'Conductor no encontrado' })
+      }
+    }
+
+    const updated = await Unit.assignDriver(id, id_driver || null)
+    if (!updated) {
+      return res.status(404).json({ message: 'Unidad no encontrada' })
+    }
+
+    res.status(200).json({
+      message: id_driver ? 'Conductor asignado exitosamente' : 'Conductor desasignado exitosamente',
+      data: updated
+    })
+  } catch (error) {
+    res.status(500).json({
+      message: 'Error al asignar conductor a la unidad',
+      error: error.message
+    })
+  }
+}
+
+module.exports = { createUnit, UpdateUnit, DeleteUnit, GetUnits, GetUnitById, AssignDriverToUnit };

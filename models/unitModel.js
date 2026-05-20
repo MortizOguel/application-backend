@@ -15,25 +15,58 @@ const Unit = {
     return rows[0]
   },
     update: async(id, unitData) => {
-    const { id_line, id_model, plate, status, foto } = unitData
-    const query = `UPDATE units SET id_line = $1, id_model = $2, plate = $3, status = $4, foto = $5 WHERE id_unit = $6 RETURNING *`;
+    const updates = []
+    const values = []
+    let paramIndex = 1
 
-    const values = [id_line, id_model, plate, status, foto, id];
-    const { rows } = await pool.query(query, values);
-    return rows[0];
+    const isValidValue = (val) => val !== undefined && val !== null
+
+    if (isValidValue(unitData.id_line)) {
+        updates.push(`id_line = $${paramIndex++}`)
+        values.push(unitData.id_line)
+    }
+    if (isValidValue(unitData.id_model)) {
+        updates.push(`id_model = $${paramIndex++}`)
+        values.push(unitData.id_model)
+    }
+    if (isValidValue(unitData.plate)) {
+        updates.push(`plate = $${paramIndex++}`)
+        values.push(unitData.plate)
+    }
+    if (isValidValue(unitData.status)) {
+        updates.push(`status = $${paramIndex++}`)
+        values.push(unitData.status)
+    }
+    if (isValidValue(unitData.foto)) {
+        updates.push(`foto = $${paramIndex++}`)
+        values.push(unitData.foto)
+    }
+    if (isValidValue(unitData.id_driver)) {
+        updates.push(`id_driver = $${paramIndex++}`)
+        values.push(unitData.id_driver)
+    }
+
+    if (updates.length === 0) {
+        return null
+    }
+
+    values.push(id)
+    const query = `UPDATE units SET ${updates.join(', ')} WHERE id_unit = $${paramIndex} RETURNING *`
+    const { rows } = await pool.query(query, values)
+    return rows[0]
   },
 delete: async (id) => {
     try {
-        const numericId = parseInt(id, 10);
+        const numericId = parseInt(id, 10)
         if (isNaN(numericId)) {
-            throw new Error('ID de unidad inválido: debe ser un número');
+            throw new Error('ID de unidad inválido: debe ser un número')
         }
-        const query = `DELETE FROM units WHERE id_unit = $1 RETURNING *`;
-        const { rows } = await pool.query(query, [numericId]);
-        return rows.length > 0;
+        const query = `DELETE FROM units WHERE id_unit = $1 RETURNING *`
+        const { rows } = await pool.query(query, [numericId])
+        return rows.length > 0
     } catch (error) {
-        console.error('Error en delete de unidad:', error.message);
-        throw error;
+        console.error('Error en delete de unidad:', error.message)
+        throw error
     }
 },
     getAll: async () => {
@@ -56,6 +89,36 @@ delete: async (id) => {
         `
         const { rows } = await pool.query(query, [id])
         return rows[0]
+    },
+
+    assignDriver: async (id_unit, id_driver) => {
+        const query = `UPDATE units SET id_driver = $1 WHERE id_unit = $2 RETURNING *`
+        const { rows } = await pool.query(query, [id_driver, id_unit])
+        return rows[0]
+    },
+
+    getByDriverId: async (id_driver) => {
+        const query = `
+          SELECT u.*, m.brand as marca, m.model as modelo
+          FROM units u
+          LEFT JOIN models m ON u.id_model = m.id_model
+          WHERE u.id_driver = $1
+          ORDER BY u.id_unit ASC
+        `
+        const { rows } = await pool.query(query, [id_driver])
+        return rows
+    },
+
+    getUnassignedUnits: async () => {
+        const query = `
+          SELECT u.*, m.brand as marca, m.model as modelo
+          FROM units u
+          LEFT JOIN models m ON u.id_model = m.id_model
+          WHERE u.id_driver IS NULL
+          ORDER BY u.id_unit ASC
+        `
+        const { rows } = await pool.query(query)
+        return rows
     },
 }
 

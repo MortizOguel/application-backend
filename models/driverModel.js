@@ -69,6 +69,33 @@ const Driver = {
         const query = `SELECT d.*, u.first_name, u.last_name, u.email, u.status, u.photo, u.id_rol, l.name as line_name FROM drivers d JOIN users u ON d.id_user = u.id_user LEFT JOIN lines l ON d.id_line = l.id_line WHERE u.status != 'deleted'`
         const { rows } = await pool.query(query)
         return rows
+    },
+
+    getDriversWithUnits: async () => {
+        const query = `
+            SELECT 
+                d.id_driver, d.id_user, d.id_line, d.adress, d.admission_date,
+                d.license_type, d.license_expiration_date, d.license_number, d.license_photo,
+                u.first_name, u.last_name, u.email, u.status, u.photo, u.id_rol,
+                l.name as line_name,
+                un.id_unit, un.plate, un.status as unit_status, un.foto,
+                m.brand as unit_marca, m.model as unit_modelo
+            FROM drivers d
+            JOIN users u ON d.id_user = u.id_user
+            LEFT JOIN lines l ON d.id_line = l.id_line
+            LEFT JOIN units un ON un.id_driver = d.id_driver
+            LEFT JOIN models m ON un.id_model = m.id_model
+            WHERE u.status != 'deleted'
+            ORDER BY d.id_driver ASC, un.id_unit ASC
+        `
+        const { rows } = await pool.query(query)
+        return rows
+    },
+
+    getByIdUser: async (id_user) => {
+        const query = `SELECT * FROM drivers WHERE id_user = $1`
+        const { rows } = await pool.query(query, [id_user])
+        return rows[0]
     }
 }
 
