@@ -41,8 +41,6 @@ const DeleteUnit = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // El modelo debe intentar eliminar el registro; PostgreSQL lanzará un error
-    // si existen dependencias activas (como registros de viajes o mantenimiento).
     const deleted = await Unit.delete(id);
 
     if (!deleted) {
@@ -51,6 +49,11 @@ const DeleteUnit = async (req, res) => {
 
     res.status(200).json({ message: 'Unidad eliminada satisfactoriamente' });
   } catch (error) {
+    if (error.code === 'DRIVER_ASSIGNED') {
+      return res.status(409).json({
+        message: error.message
+      });
+    }
     res.status(500).json({
       message: 'No se pudo eliminar la unidad debido a restricciones de integridad',
       error: error.message

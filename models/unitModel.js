@@ -61,10 +61,29 @@ delete: async (id) => {
         if (isNaN(numericId)) {
             throw new Error('ID de unidad inválido: debe ser un número')
         }
+        const checkQuery = `SELECT id_driver, plate FROM units WHERE id_unit = $1 AND status != 'deleted'`
+        const { rows } = await pool.query(checkQuery, [numericId])
+        if (rows.length === 0) {
+            return false
+        }
+        const unit = rows[0]
+        if (unit.id_driver) {
+            const driverQuery = `SELECT u.first_name, u.last_name FROM drivers d JOIN users u ON d.id_user = u.id_user WHERE d.id_driver = $1`
+            const { rows: driverRows } = await pool.query(driverQuery, [unit.id_driver])
+            const driverName = driverRows.length > 0
+                ? `${driverRows[0].first_name} ${driverRows[0].last_name}`.trim()
+                : 'un conductor'
+            const error = new Error(`No se puede eliminar la unidad ${unit.plate} porque tiene asignado el conductor ${driverName}. Desasigne el conductor primero.`)
+            error.code = 'DRIVER_ASSIGNED'
+            throw error
+        }
         const query = `UPDATE units SET status = 'deleted' WHERE id_unit = $1 AND status != 'deleted' RETURNING *`
-        const { rows } = await pool.query(query, [numericId])
-        return rows.length > 0
+        const { rows: updatedRows } = await pool.query(query, [numericId])
+        return updatedRows.length > 0
     } catch (error) {
+        if (error.code === 'DRIVER_ASSIGNED') {
+            throw error
+        }
         console.error('Error en delete de unidad:', error.message)
         throw error
     }
