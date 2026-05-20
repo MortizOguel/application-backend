@@ -1,4 +1,5 @@
 const Route = require('../models/routeModel')
+const Service = require('../models/serviceModel')
 
 const CreateRoute = async (req, res) => {
     try {
@@ -18,6 +19,12 @@ const CreateRoute = async (req, res) => {
 const UpdateRoute = async(req, res) => {
     try{
         const { id } = req.params
+        const activeServices = await Service.getActiveByRoute(id)
+        if (activeServices.length > 0) {
+            return res.status(409).json({
+                message: 'No se puede editar la ruta: tiene asignaciones vigentes en el dashboard'
+            })
+        }
         const UpdatedRoute = await Route.update(id, req.body)
         if(!UpdatedRoute) return res.status(404).json({
             message: 'Ruta no encontrada '
@@ -37,9 +44,15 @@ const UpdateRoute = async(req, res) => {
 const DeleteRoute = async(req, res) => {
     try{
         const { id } = req.params
-        const deleted = await Route.delete(id)
+        const activeServices = await Service.getActiveByRoute(id)
+        if (activeServices.length > 0) {
+            return res.status(409).json({
+                message: 'No se puede eliminar la ruta: tiene asignaciones vigentes en el dashboard'
+            })
+        }
+        const deleted = await Route.softDelete(id)
         if(!deleted) return res.status(404).json({
-            message: 'La ruta a eliminar no se ha podido encontrar',
+            message: 'La ruta no se ha podido encontrar',
         })
         res.status(200).json({
             message: 'La ruta ha sido eliminada con exito',

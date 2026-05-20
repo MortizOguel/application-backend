@@ -42,8 +42,13 @@ const Route = {
         const { rows } = await pool.query(query, [id])
         return rows.length > 0
     },
+    softDelete: async (id) => {
+        const query = `UPDATE routes SET status = 'deleted' WHERE id_route = $1 RETURNING *`
+        const { rows } = await pool.query(query, [id])
+        return rows.length > 0
+    },
     getAll: async () => {
-        const query = 'SELECT * FROM routes ORDER BY id_route ASC'
+        const query = `SELECT * FROM routes WHERE status != 'deleted' ORDER BY id_route ASC`
         const { rows } = await pool.query(query)
         return rows.map(r => ({
             ...r,
@@ -54,7 +59,7 @@ const Route = {
     },
 
     getById: async (id) => {
-        const query = 'SELECT * FROM routes WHERE id_route = $1'
+        const query = `SELECT * FROM routes WHERE id_route = $1 AND status != 'deleted'`
         const { rows } = await pool.query(query, [id])
         if (rows[0]) {
             const r = rows[0]

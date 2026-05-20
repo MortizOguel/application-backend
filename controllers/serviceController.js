@@ -180,10 +180,24 @@ const deleteService = async (req, res) => {
     }
 }
 
+const getActiveServicesByRoute = async (req, res) => {
+    try {
+        const { routeId } = req.params
+        const services = await Service.getActiveByRoute(routeId)
+        res.status(200).json(services)
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error al verificar asignaciones activas',
+            error: error.message
+        })
+    }
+}
+
 module.exports = {
     createService,
     getAllServices,
     getServiceById,
     updateService,
-    deleteService
+    deleteService,
+    getActiveServicesByRoute
 }

@@ -116,6 +116,18 @@ const Service = {
         `
         const { rows } = await pool.query(query, [id_driver, start_date, finish_date])
         return rows
+    },
+
+    getActiveByRoute: async (routeId) => {
+        const query = `
+            SELECT s.*, r.name as route_name
+            FROM services s
+            LEFT JOIN routes r ON s.id_route = r.id_route
+            WHERE s.id_route = $1 AND s.finish_date > NOW()
+            ORDER BY s.start_date DESC
+        `
+        const { rows } = await pool.query(query, [routeId])
+        return rows
     }
 }
 
