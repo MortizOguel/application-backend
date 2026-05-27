@@ -9,6 +9,8 @@ const LineRoutes = require('./routes/lineRoutes')
 const DriverRoutes = require('./routes/driverRoutes')
 const EmployeeRoutes = require('./routes/employeeRoutes')
 const ServiceRoutes = require('./routes/serviceRoutes')
+const ModelRoutes = require('./routes/modelRoutes')
+const BrandRoutes = require('./routes/brandRoutes')
 
 const app = express()
 
@@ -29,6 +31,8 @@ app.use('/api/lines', LineRoutes)
 app.use('/api/drivers', DriverRoutes)
 app.use('/api/employees', EmployeeRoutes)
 app.use('/api/services', ServiceRoutes)
+app.use('/api/models', ModelRoutes)
+app.use('/api/brands', BrandRoutes)
 
 app.get('/api/status', (req, res) => {
     res.json({

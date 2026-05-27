@@ -79,13 +79,14 @@ const Driver = {
                 u.first_name, u.last_name, u.email, u.status, u.photo, u.id_rol,
                 l.name as line_name,
                 un.id_unit, un.plate, un.status as unit_status, un.foto, un.id_line as unit_id_line,
-                m.brand as unit_marca, m.model as unit_modelo,
+                b.brand_name as unit_marca, m.model as unit_modelo,
                 ul.name as unit_line_name
             FROM drivers d
             JOIN users u ON d.id_user = u.id_user
             LEFT JOIN lines l ON d.id_line = l.id_line
             LEFT JOIN units un ON un.id_driver = d.id_driver
             LEFT JOIN models m ON un.id_model = m.id_model
+            LEFT JOIN brands b ON m.id_brand = b.id_brand
             LEFT JOIN lines ul ON un.id_line = ul.id_line
             WHERE u.status != 'deleted'
             ORDER BY d.id_driver ASC, un.id_unit ASC

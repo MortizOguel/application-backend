@@ -28,7 +28,7 @@ const Service = {
         const query = `
             SELECT s.*, 
                    u.plate as unit_plate, u.id_model as unit_model_id,
-                   m.brand as unit_marca, m.model as unit_modelo,
+                   b.brand_name as unit_marca, m.model as unit_modelo,
                    r.name as route_name, r.origin as route_origin, r.destination as route_destination,
                    s.id_line as service_id_line,
                    CONCAT(us.first_name, ' ', us.last_name) as driver_name,
@@ -37,6 +37,7 @@ const Service = {
             FROM services s
             LEFT JOIN units u ON s.id_unit = u.id_unit
             LEFT JOIN models m ON u.id_model = m.id_model
+            LEFT JOIN brands b ON m.id_brand = b.id_brand
             LEFT JOIN routes r ON s.id_route = r.id_route
             LEFT JOIN drivers dr ON s.id_driver = dr.id_driver
             LEFT JOIN users us ON dr.id_user = us.id_user
@@ -51,7 +52,7 @@ const Service = {
         const query = `
             SELECT s.*, 
                    u.plate as unit_plate, u.id_model as unit_model_id,
-                   m.brand as unit_marca, m.model as unit_modelo,
+                   b.brand_name as unit_marca, m.model as unit_modelo,
                    r.name as route_name, r.origin as route_origin, r.destination as route_destination,
                    s.id_line as service_id_line,
                    CONCAT(us.first_name, ' ', us.last_name) as driver_name,
@@ -60,6 +61,7 @@ const Service = {
             FROM services s
             LEFT JOIN units u ON s.id_unit = u.id_unit
             LEFT JOIN models m ON u.id_model = m.id_model
+            LEFT JOIN brands b ON m.id_brand = b.id_brand
             LEFT JOIN routes r ON s.id_route = r.id_route
             LEFT JOIN drivers dr ON s.id_driver = dr.id_driver
             LEFT JOIN users us ON dr.id_user = us.id_user

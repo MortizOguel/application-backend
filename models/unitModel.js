@@ -90,9 +90,10 @@ delete: async (id) => {
 },
     getAll: async () => {
     const query = `
-      SELECT u.*, m.brand as marca, m.model as modelo, l.name as line_name
+      SELECT u.*, m.id_brand, b.brand_name as marca, m.model as modelo, l.name as line_name
       FROM units u 
       LEFT JOIN models m ON u.id_model = m.id_model
+      LEFT JOIN brands b ON m.id_brand = b.id_brand
       LEFT JOIN lines l ON u.id_line = l.id_line
       WHERE u.status != 'deleted'
       ORDER BY u.id_unit ASC
@@ -103,9 +104,10 @@ delete: async (id) => {
 
     getById: async (id) => {
         const query = `
-          SELECT u.*, m.brand as marca, m.model as modelo 
+          SELECT u.*, m.id_brand, b.brand_name as marca, m.model as modelo 
           FROM units u 
           LEFT JOIN models m ON u.id_model = m.id_model 
+          LEFT JOIN brands b ON m.id_brand = b.id_brand
           WHERE u.id_unit = $1 AND u.status != 'deleted'
         `
         const { rows } = await pool.query(query, [id])
@@ -120,9 +122,10 @@ delete: async (id) => {
 
     getByDriverId: async (id_driver) => {
         const query = `
-          SELECT u.*, m.brand as marca, m.model as modelo, l.name as line_name
+          SELECT u.*, m.id_brand, b.brand_name as marca, m.model as modelo, l.name as line_name
           FROM units u
           LEFT JOIN models m ON u.id_model = m.id_model
+          LEFT JOIN brands b ON m.id_brand = b.id_brand
           LEFT JOIN lines l ON u.id_line = l.id_line
           WHERE u.id_driver = $1
           ORDER BY u.id_unit ASC
@@ -133,9 +136,10 @@ delete: async (id) => {
 
     getUnassignedUnits: async () => {
         const query = `
-          SELECT u.*, m.brand as marca, m.model as modelo, l.name as line_name
+          SELECT u.*, m.id_brand, b.brand_name as marca, m.model as modelo, l.name as line_name
           FROM units u
           LEFT JOIN models m ON u.id_model = m.id_model
+          LEFT JOIN brands b ON m.id_brand = b.id_brand
           LEFT JOIN lines l ON u.id_line = l.id_line
           WHERE u.id_driver IS NULL
           ORDER BY u.id_unit ASC
