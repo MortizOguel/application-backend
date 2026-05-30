@@ -75,6 +75,9 @@ const DeleteDriver = async (req, res) => {
 
 const getDriversDetailed = async (req, res) => {
   try {
+    await Driver.suspendExpiredLicenses().catch(err => {
+      console.error('[Auto-Suspend Error]', err.message)
+    })
     const drivers = await Driver.getAllDetailed()
     res.status(200).json(drivers)
   } catch (error) {
@@ -87,6 +90,9 @@ const getDriversDetailed = async (req, res) => {
 
 const getDriversWithUnits = async (req, res) => {
   try {
+    await Driver.suspendExpiredLicenses().catch(err => {
+      console.error('[Auto-Suspend Error]', err.message)
+    })
     const rows = await Driver.getDriversWithUnits()
     const driversMap = {}
     for (const row of rows) {

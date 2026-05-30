@@ -99,6 +99,20 @@ const Driver = {
         const query = `SELECT * FROM drivers WHERE id_user = $1`
         const { rows } = await pool.query(query, [id_user])
         return rows[0]
+    },
+
+    suspendExpiredLicenses: async () => {
+        const query = `
+            UPDATE users u
+            SET status = 'suspended'
+            FROM drivers d
+            WHERE u.id_user = d.id_user
+              AND d.license_expiration_date <= CURRENT_DATE
+              AND u.status NOT IN ('suspended', 'deleted')
+            RETURNING u.id_user, u.first_name, u.last_name
+        `
+        const { rows } = await pool.query(query)
+        return rows
     }
 }
 
