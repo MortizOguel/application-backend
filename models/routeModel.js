@@ -58,6 +58,17 @@ const Route = {
         }))
     },
 
+    getByLineId: async (lineId) => {
+        const query = `SELECT r.*, l.name AS line_name FROM routes r LEFT JOIN lines l ON r.id_line = l.id_line WHERE r.id_line = $1 AND r.status != 'deleted' ORDER BY r.id_route ASC`
+        const { rows } = await pool.query(query, [lineId])
+        return rows.map(r => ({
+            ...r,
+            puntosControl: r.puntos_control,
+            coordenadasInicio: r.coordenadas_inicio,
+            coordenadasLlegada: r.coordenadas_llegada
+        }))
+    },
+
     getById: async (id) => {
         const query = `SELECT r.*, l.name AS line_name FROM routes r LEFT JOIN lines l ON r.id_line = l.id_line WHERE r.id_route = $1 AND r.status != 'deleted'`
         const { rows } = await pool.query(query, [id])

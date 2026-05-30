@@ -1,5 +1,6 @@
 const Route = require('../models/routeModel')
 const Service = require('../models/serviceModel')
+const Driver = require('../models/driverModel')
 
 const CreateRoute = async (req, res) => {
     try {
@@ -67,7 +68,17 @@ const DeleteRoute = async(req, res) => {
 
 const GetRoutes = async (req, res) => {
     try {
-        const routes = await Route.getAll()
+        let routes
+        if (req.user.id_rol === 3) {
+            const driver = await Driver.getByIdUser(req.user.id_user)
+            if (driver && driver.id_line) {
+                routes = await Route.getByLineId(driver.id_line)
+            } else {
+                routes = []
+            }
+        } else {
+            routes = await Route.getAll()
+        }
         res.status(200).json(routes)
     } catch (error) {
         res.status(500).json({
