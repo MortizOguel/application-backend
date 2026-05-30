@@ -48,7 +48,7 @@ const Route = {
         return rows.length > 0
     },
     getAll: async () => {
-        const query = `SELECT * FROM routes WHERE status != 'deleted' ORDER BY id_route ASC`
+        const query = `SELECT r.*, l.name AS line_name FROM routes r LEFT JOIN lines l ON r.id_line = l.id_line WHERE r.status != 'deleted' ORDER BY r.id_route ASC`
         const { rows } = await pool.query(query)
         return rows.map(r => ({
             ...r,
@@ -59,7 +59,7 @@ const Route = {
     },
 
     getById: async (id) => {
-        const query = `SELECT * FROM routes WHERE id_route = $1 AND status != 'deleted'`
+        const query = `SELECT r.*, l.name AS line_name FROM routes r LEFT JOIN lines l ON r.id_line = l.id_line WHERE r.id_route = $1 AND r.status != 'deleted'`
         const { rows } = await pool.query(query, [id])
         if (rows[0]) {
             const r = rows[0]

@@ -120,6 +120,26 @@ const Service = {
         return rows
     },
 
+    getByDriverUserId: async (id_user) => {
+        const query = `
+            SELECT s.*,
+                   u.plate as unit_plate, m.model as unit_modelo, b.brand_name as unit_marca,
+                   r.name as route_name, r.origin as route_origin, r.destination as route_destination,
+                   l.name as line_name
+            FROM services s
+            JOIN drivers d ON s.id_driver = d.id_driver
+            LEFT JOIN units u ON s.id_unit = u.id_unit
+            LEFT JOIN models m ON u.id_model = m.id_model
+            LEFT JOIN brands b ON m.id_brand = b.id_brand
+            LEFT JOIN routes r ON s.id_route = r.id_route
+            LEFT JOIN lines l ON s.id_line = l.id_line
+            WHERE d.id_user = $1
+            ORDER BY s.start_date DESC
+        `
+        const { rows } = await pool.query(query, [id_user])
+        return rows
+    },
+
     getActiveByRoute: async (routeId) => {
         const query = `
             SELECT s.*, r.name as route_name

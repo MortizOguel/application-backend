@@ -193,11 +193,24 @@ const getActiveServicesByRoute = async (req, res) => {
     }
 }
 
+const getMyServices = async (req, res) => {
+    try {
+        const services = await Service.getByDriverUserId(req.user.id_user)
+        res.status(200).json(services)
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error al obtener tus asignaciones',
+            error: error.message
+        })
+    }
+}
+
 module.exports = {
     createService,
     getAllServices,
     getServiceById,
     updateService,
     deleteService,
-    getActiveServicesByRoute
+    getActiveServicesByRoute,
+    getMyServices
 }

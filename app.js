@@ -11,6 +11,8 @@ const EmployeeRoutes = require('./routes/employeeRoutes')
 const ServiceRoutes = require('./routes/serviceRoutes')
 const ModelRoutes = require('./routes/modelRoutes')
 const BrandRoutes = require('./routes/brandRoutes')
+const RoleRoutes = require('./routes/roleRoutes')
+const ConductorRoutes = require('./routes/conductorRoutes')
 
 const app = express()
 
@@ -33,6 +35,8 @@ app.use('/api/employees', EmployeeRoutes)
 app.use('/api/services', ServiceRoutes)
 app.use('/api/models', ModelRoutes)
 app.use('/api/brands', BrandRoutes)
+app.use('/api/roles', RoleRoutes)
+app.use('/api/conductores', ConductorRoutes)
 
 app.get('/api/status', (req, res) => {
     res.json({
