@@ -75,4 +75,64 @@ const RenewLicense = async (req, res) => {
     }
 }
 
-module.exports = { GetMyDriverProfile, GetMyUnits, RenewLicense }
+const RenewMedicalCertificate = async (req, res) => {
+    try {
+        const driver = await Driver.getByIdUser(req.user.id_user)
+        if (!driver) {
+            return res.status(404).json({ message: 'Perfil de conductor no encontrado' })
+        }
+
+        const { medic_issuance_date, medic_photo } = req.body
+        if (!medic_issuance_date) {
+            return res.status(400).json({ message: 'La fecha de expedición es obligatoria' })
+        }
+        if (!medic_photo) {
+            return res.status(400).json({ message: 'La foto del certificado médico es obligatoria' })
+        }
+
+        const issuanceDate = new Date(medic_issuance_date)
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+
+        if (issuanceDate < today) {
+            return res.status(400).json({
+                message: 'La fecha de expedición debe ser igual o posterior al día de hoy'
+            })
+        }
+
+        const expirationDate = new Date(issuanceDate)
+        expirationDate.setFullYear(expirationDate.getFullYear() + 5)
+
+        const medic_expiration_date = expirationDate.toISOString().split('T')[0]
+
+        console.log('--- RENEW MEDICAL CERT ---');
+        console.log('medic_issuance_date:', medic_issuance_date);
+        console.log('medic_photo length:', medic_photo ? medic_photo.length : 0);
+        console.log('medic_photo preview:', medic_photo ? medic_photo.substring(0, 80) : 'N/A');
+
+        const updated = await Driver.update(req.user.id_user, {
+            medic_issuance_date,
+            medic_expiration_date,
+            medic_photo
+        })
+
+        if (!updated) {
+            return res.status(404).json({ message: 'Perfil de conductor no encontrado' })
+        }
+
+        res.status(200).json({
+            message: 'Certificado médico renovado exitosamente',
+            data: {
+                medic_issuance_date,
+                medic_expiration_date
+            }
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error al renovar el certificado médico',
+            error: error.message
+        })
+    }
+}
+
+module.exports = { GetMyDriverProfile, GetMyUnits, RenewLicense, RenewMedicalCertificate }

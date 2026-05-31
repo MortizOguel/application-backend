@@ -15,11 +15,13 @@ const User = {
       const userRes = await client.query(userQuery, userValues)
       const userId = userRes.rows[0].id_user
 
-      const driverQuery = `INSERT INTO drivers (id_user, id_line, adress, admission_date, license_type, license_expiration_date, license_number, license_photo)VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
+      const driverQuery = `INSERT INTO drivers (id_user, id_line, adress, admission_date, license_type, license_expiration_date, license_number, license_photo, medic_certificate_number, medic_issuance_date, medic_expiration_date, medic_photo)VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`
       const driverValues = [
         userId, driverData.id_line, driverData.adress, 
         driverData.admission_date, driverData.license_type, driverData.license_expiration_date,
-        driverData.license_number, driverData.license_photo
+        driverData.license_number, driverData.license_photo,
+        driverData.medic_certificate_number, driverData.medic_issuance_date, driverData.medic_expiration_date,
+        driverData.medic_photo
       ]
       await client.query(driverQuery, driverValues)
 

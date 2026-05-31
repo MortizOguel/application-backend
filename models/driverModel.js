@@ -2,10 +2,10 @@ const {pool} = require('../config/db')
 
 const Driver = {
     create: async (driverData) => {
-        const { id_user, id_line, adress, admission_date, license_type, license_expiration_date, license_number, license_photo } = driverData
-        const query = `INSERT INTO drivers (id_user, id_line, adress, admission_date, license_type, license_expiration_date, license_number, license_photo)VALUES ($1, $2, $3, $4, $5, $6, $7, $8)RETURNING *`
+        const { id_user, id_line, adress, admission_date, license_type, license_expiration_date, license_number, license_photo, medic_certificate_number, medic_issuance_date, medic_expiration_date, medic_photo } = driverData
+        const query = `INSERT INTO drivers (id_user, id_line, adress, admission_date, license_type, license_expiration_date, license_number, license_photo, medic_certificate_number, medic_issuance_date, medic_expiration_date, medic_photo)VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)RETURNING *`
 
-        const values = [id_user, id_line, adress, admission_date, license_type, license_expiration_date, license_number, license_photo]
+        const values = [id_user, id_line, adress, admission_date, license_type, license_expiration_date, license_number, license_photo, medic_certificate_number, medic_issuance_date, medic_expiration_date, medic_photo]
         const { rows } = await pool.query(query, values)
         return rows[0]
     },
@@ -48,6 +48,22 @@ const Driver = {
         if (isValidValue(data.admission_date)) {
             updates.push(`admission_date = $${paramIndex++}`);
             values.push(data.admission_date);
+        }
+        if (isValidValue(data.medic_certificate_number)) {
+            updates.push(`medic_certificate_number = $${paramIndex++}`);
+            values.push(data.medic_certificate_number);
+        }
+        if (isValidValue(data.medic_issuance_date)) {
+            updates.push(`medic_issuance_date = $${paramIndex++}`);
+            values.push(data.medic_issuance_date);
+        }
+        if (isValidValue(data.medic_expiration_date)) {
+            updates.push(`medic_expiration_date = $${paramIndex++}`);
+            values.push(data.medic_expiration_date);
+        }
+        if (isValidValue(data.medic_photo)) {
+            updates.push(`medic_photo = $${paramIndex++}`);
+            values.push(data.medic_photo);
         }
 
         if (updates.length === 0) {

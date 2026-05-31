@@ -17,6 +17,8 @@ const UpdateUser = async(req, res) => {
         if (isDriver && driverData) {
             console.log('--- UPDATE DRIVER DATA CALLED ---');
             console.log('license_photo length:', driverData.license_photo ? driverData.license_photo.length : 0);
+            console.log('medic_photo length:', driverData.medic_photo ? driverData.medic_photo.length : 0);
+            console.log('medic_photo preview:', driverData.medic_photo ? driverData.medic_photo.substring(0, 80) : 'N/A');
             await Driver.update(id, driverData)
         }
 
