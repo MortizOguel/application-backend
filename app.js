@@ -13,6 +13,7 @@ const ModelRoutes = require('./routes/modelRoutes')
 const BrandRoutes = require('./routes/brandRoutes')
 const RoleRoutes = require('./routes/roleRoutes')
 const ConductorRoutes = require('./routes/conductorRoutes')
+const AuthorizedInsurerRoutes = require('./routes/authorizedInsurerRoutes')
 
 const app = express()
 
@@ -37,6 +38,7 @@ app.use('/api/models', ModelRoutes)
 app.use('/api/brands', BrandRoutes)
 app.use('/api/roles', RoleRoutes)
 app.use('/api/conductores', ConductorRoutes)
+app.use('/api/authorized-insurers', AuthorizedInsurerRoutes)
 
 app.get('/api/status', (req, res) => {
     res.json({

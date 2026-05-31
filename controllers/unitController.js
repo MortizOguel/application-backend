@@ -3,6 +3,22 @@ const Driver = require('../models/driverModel');
 
 const createUnit = async (req, res) => {
   try {
+    const { id_authorized_insurer_rcv, id_authorized_insurer_personal, policy_number_rcv, policy_number_personal, serial_chasis } = req.body;
+
+    if (!id_authorized_insurer_rcv || !id_authorized_insurer_personal || !policy_number_rcv || !policy_number_personal || !serial_chasis) {
+      return res.status(400).json({ message: 'Los datos de seguro (aseguradoras, pólizas y serial chasis) son requeridos' });
+    }
+
+    const serialRegex = /^[A-Z0-9]+$/
+    if (!serialRegex.test(serial_chasis) || serial_chasis.length > 17) {
+      return res.status(400).json({ message: 'El serial de chasis debe tener máximo 17 caracteres alfanuméricos' });
+    }
+
+    const existingSerial = await Unit.findBySerialChasis(serial_chasis);
+    if (existingSerial) {
+      return res.status(409).json({ message: 'Ya existe una unidad con este serial de chasis' });
+    }
+
     const unit = await Unit.create(req.body);
     res.status(201).json({ message: 'Unidad registrada', data: unit });
   } catch (error) {
@@ -16,9 +32,9 @@ const createUnit = async (req, res) => {
 const UpdateUnit = async (req, res) => {
   try{
     const {id} = req.params;
-    const {plate, id_line, id_model, status, foto} = req.body;
+    const {plate, id_line, id_model, status, foto, id_authorized_insurer_rcv, id_authorized_insurer_personal, policy_number_rcv, policy_number_personal} = req.body;
 
-    const updatedUnit = await Unit.update(id, {plate, id_line, id_model, status, foto});
+    const updatedUnit = await Unit.update(id, {plate, id_line, id_model, status, foto, id_authorized_insurer_rcv, id_authorized_insurer_personal, policy_number_rcv, policy_number_personal});
 
     if (!updatedUnit) {
       return res.status(404).json({ message: 'La unidad no fue encontrada' });
