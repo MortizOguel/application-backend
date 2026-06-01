@@ -9,6 +9,6 @@ router.get('/:id', VerifyToken, checkRole([1, 2]), GetUnitById);
 router.post('/', VerifyToken, checkRole([1]), createUnit);
 router.put('/:id', VerifyToken, checkRole([1, 2]), UpdateUnit);
 router.delete('/:id', VerifyToken, checkRole([1]), DeleteUnit);
-router.patch('/:id/driver', VerifyToken, checkRole([1]), AssignDriverToUnit);
+router.patch('/:id/driver', VerifyToken, checkRole([1, 2]), AssignDriverToUnit);
 
 module.exports = router;
