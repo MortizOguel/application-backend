@@ -123,8 +123,14 @@ const Driver = {
             SET status = 'suspended'
             FROM drivers d
             WHERE u.id_user = d.id_user
-              AND d.license_expiration_date <= CURRENT_DATE
               AND u.status NOT IN ('suspended', 'deleted')
+              AND (
+                  d.license_expiration_date <= CURRENT_DATE
+                  OR (
+                      d.medic_expiration_date IS NOT NULL
+                      AND d.medic_expiration_date <= CURRENT_DATE
+                  )
+              )
             RETURNING u.id_user, u.first_name, u.last_name
         `
         const { rows } = await pool.query(query)
