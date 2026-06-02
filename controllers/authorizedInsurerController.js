@@ -48,7 +48,6 @@ const createInsurer = async (req, res) => {
     }
     res.status(500).json({
       message: 'Fallo en el servidor al registrar la aseguradora',
-      error: error.message,
     })
   }
 }
@@ -60,7 +59,6 @@ const GetInsurers = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: 'Error al obtener aseguradoras',
-      error: error.message,
     })
   }
 }
@@ -74,7 +72,6 @@ const GetInsurerById = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: 'Error al obtener aseguradora',
-      error: error.message,
     })
   }
 }
@@ -112,7 +109,6 @@ const UpdateInsurer = async (req, res) => {
     }
     res.status(500).json({
       message: 'Error al actualizar aseguradora',
-      error: error.message,
     })
   }
 }
@@ -132,7 +128,6 @@ const DeleteInsurer = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: 'Error al eliminar aseguradora',
-      error: error.message,
     })
   }
 }

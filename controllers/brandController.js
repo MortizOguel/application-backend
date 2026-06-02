@@ -7,7 +7,7 @@ const getBrands = async (req, res) => {
     )
     res.status(200).json(result.rows)
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener marcas', error: error.message })
+    res.status(500).json({ message: 'Error al obtener marcas'})
   }
 }
 

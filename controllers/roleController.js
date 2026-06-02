@@ -6,8 +6,7 @@ const GetRoles = async (req, res) => {
         res.status(200).json(roles)
     } catch (error) {
         res.status(500).json({
-            message: 'Error al obtener roles',
-            error: error.message
+            message: 'Error al obtener roles'
         })
     }
 }

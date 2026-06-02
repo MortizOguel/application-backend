@@ -11,8 +11,7 @@ const CreateRoute = async (req, res) => {
         })
     }catch(error){
         res.status(500).json({
-            message: 'Error interno del servidor al crear una ruta',
-            error: error.message
+            message: 'Error interno del servidor al crear una ruta'
         })
     }
 }
@@ -36,8 +35,7 @@ const UpdateRoute = async(req, res) => {
     }catch(error){
         console.error('Error en UpdateRoute:', error)
         res.status(500).json({
-            message: 'Error interno en el servidor al actualizar la ruta',
-            error: error.message    
+            message: 'Error interno en el servidor al actualizar la ruta'
         })
     }
 }
@@ -60,8 +58,7 @@ const DeleteRoute = async(req, res) => {
         })
     }catch(error){
         res.status(500).json({
-            message: 'Error interno del servidor al eliminar la ruta',
-            error: error.message
+            message: 'Error interno del servidor al eliminar la ruta'
         })
     }
 }
@@ -82,8 +79,7 @@ const GetRoutes = async (req, res) => {
         res.status(200).json(routes)
     } catch (error) {
         res.status(500).json({
-            message: 'Error interno del servidor al obtener las rutas',
-            error: error.message
+            message: 'Error interno del servidor al obtener las rutas'
         })
     }
 }
@@ -95,7 +91,7 @@ const GetRouteById = async (req, res) => {
         if (!route) return res.status(404).json({ message: 'Ruta no encontrada' })
         res.status(200).json(route)
     } catch (error) {
-        res.status(500).json({ message: 'Error al obtener ruta', error: error.message })
+        res.status(500).json({ message: 'Error al obtener ruta'})
     }
 }
 

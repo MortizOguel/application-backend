@@ -3,19 +3,23 @@ require('dotenv').config()
 
 const VerifyToken = (req, res, next) => {
     const bearerHeader = req.headers['authorization']
+    let token = null
 
-    // La validación debe estar DENTRO de la función
-    if (!bearerHeader) {
+    if (bearerHeader) {
+        token = bearerHeader.split(' ')[1]
+    } else if (req.cookies && req.cookies.token) {
+        token = req.cookies.token
+    }
+
+    if (!token) {
         return res.status(403).json({
-            message: 'Acceso denegado: Cabecera de autorizacion ausente'
+            message: 'Acceso denegado: Token de autenticación ausente'
         })
     }
 
-    const token = bearerHeader.split(' ')[1]
-
     try {
         // Verificacion mediante la clave secreta institucional
-        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+        const decoded = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] })
         req.user = decoded
         next() // Permite el paso al siguiente controlador
     } catch (error) {

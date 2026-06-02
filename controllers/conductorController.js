@@ -12,8 +12,7 @@ const GetMyDriverProfile = async (req, res) => {
         res.status(200).json(driver)
     } catch (error) {
         res.status(500).json({
-            message: 'Error al obtener perfil de conductor',
-            error: error.message
+            message: 'Error al obtener perfil de conductor'
         })
     }
 }
@@ -30,8 +29,7 @@ const GetMyUnits = async (req, res) => {
         res.status(200).json(units)
     } catch (error) {
         res.status(500).json({
-            message: 'Error al obtener tus unidades',
-            error: error.message
+            message: 'Error al obtener tus unidades'
         })
     }
 }
@@ -69,8 +67,7 @@ const RenewLicense = async (req, res) => {
         })
     } catch (error) {
         res.status(500).json({
-            message: 'Error al renovar la licencia',
-            error: error.message
+            message: 'Error al renovar la licencia'
         })
     }
 }
@@ -129,8 +126,7 @@ const RenewMedicalCertificate = async (req, res) => {
         })
     } catch (error) {
         res.status(500).json({
-            message: 'Error al renovar el certificado médico',
-            error: error.message
+            message: 'Error al renovar el certificado médico'
         })
     }
 }

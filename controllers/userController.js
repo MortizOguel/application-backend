@@ -35,8 +35,7 @@ const UpdateUser = async(req, res) => {
         })
     } catch(error){
         res.status(500).json({
-            message: 'Fallo interno en el servidor a la hora de actualizar el usuario',
-            error: error.message
+            message: 'Fallo interno en el servidor a la hora de actualizar el usuario'
         })
     }
 }
@@ -50,8 +49,7 @@ const DeleteUser = async(req, res) => {
 
     } catch(error){
         res.status(500).json({
-            message: 'Fallo interno en el servidor a la hora de eliminar el usuario',
-            error: error.message
+            message: 'Fallo interno en el servidor a la hora de eliminar el usuario'
         })
     }
 }
@@ -64,8 +62,7 @@ const GetUsers = async (req, res) => {
         res.status(200).json(users)
     } catch (error) {
         res.status(500).json({ 
-            message: 'Error interno al recuperar la lista de usuarios', 
-            error: error.message 
+            message: 'Error interno al recuperar la lista de usuarios'
         })
     }
 }
@@ -77,7 +74,7 @@ const GetUserById = async (req, res) => {
         if (!user) return res.status(404).json({ message: 'Usuario no encontrado' })
         res.status(200).json(user)
     } catch (error) {
-        res.status(500).json({ message: 'Error en la consulta individual', error: error.message })
+        res.status(500).json({ message: 'Error en la consulta individual'})
     }
 }
 
@@ -101,7 +98,7 @@ const ChangePassword = async (req, res) => {
 
     res.status(200).json({ msg: 'Contraseña actualizada exitosamente' })
   } catch (error) {
-    res.status(500).json({ msg: 'Error al cambiar contraseña', error: error.message })
+    res.status(500).json({ msg: 'Error al cambiar contraseña'})
   }
 }
 

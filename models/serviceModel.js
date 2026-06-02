@@ -125,6 +125,9 @@ const Service = {
             SELECT s.*,
                    u.plate as unit_plate, m.model as unit_modelo, b.brand_name as unit_marca,
                    r.name as route_name, r.origin as route_origin, r.destination as route_destination,
+                   r.coordenadas_inicio as "coordenadasInicio",
+                   r.coordenadas_llegada as "coordenadasLlegada",
+                   r.puntos_control as "puntosControl",
                    l.name as line_name
             FROM services s
             JOIN drivers d ON s.id_driver = d.id_driver
@@ -133,7 +136,7 @@ const Service = {
             LEFT JOIN brands b ON m.id_brand = b.id_brand
             LEFT JOIN routes r ON s.id_route = r.id_route
             LEFT JOIN lines l ON s.id_line = l.id_line
-            WHERE d.id_user = $1
+            WHERE d.id_user = $1 AND s.finish_date > NOW()
             ORDER BY s.start_date DESC
         `
         const { rows } = await pool.query(query, [id_user])

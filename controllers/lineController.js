@@ -10,8 +10,7 @@ const RegisterLine = async (req, res) => {
     } catch (error) {
         console.error('Error en RegisterLine:', error)
         res.status(500).json({
-            message: 'Error del servidor al registrar la linea',
-            error: error.message
+            message: 'Error del servidor al registrar la linea'
         })
     };
 }
@@ -22,8 +21,7 @@ const GetLines = async (req, res) => {
             res.status(200).json(lines);
         } catch(error){
             res.status(500).json({
-                message: 'Error al obtener las lineas',
-                error: error.message
+                message: 'Error al obtener las lineas'
             })
         }
 }
@@ -38,8 +36,7 @@ const UpdateLines = async (req, res) =>{
             })
         }catch (error){
             res.status(500).json({
-                message: 'Error al actualizar los datos de la linea',
-                error: error.message
+                message: 'Error al actualizar los datos de la linea'
             })
         }
 }
@@ -54,8 +51,7 @@ const DeleteLines = async(req, res) => {
         }catch(error){
             console.error('Error al eliminar linea:', error);
             res.status(500).json({
-                message: 'Error al eliminar la linea',
-                error: error.message
+                message: 'Error al eliminar la linea'
             })
         }
 }
@@ -67,7 +63,7 @@ const GetLineById = async (req, res) => {
         if (!line) return res.status(404).json({ message: 'Línea no encontrada' })
         res.status(200).json(line)
     } catch (error) {
-        res.status(500).json({ message: 'Error al obtener línea', error: error.message })
+        res.status(500).json({ message: 'Error al obtener línea'})
     }
 }
 

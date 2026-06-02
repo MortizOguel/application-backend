@@ -13,8 +13,7 @@ const registerDriver = async (req, res) => {
     })
   } catch (error) {
     res.status(500).json({
-      message: 'Error al registrar el conductor',
-      error: error.message
+      message: 'Error al registrar el conductor'
     })
   }
 }
@@ -34,8 +33,7 @@ const updateDriverData = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({
-            message: 'Error al actualizar atributos del conductor',
-            error: error.message
+            message: 'Error al actualizar atributos del conductor'
         });
     }
 };
@@ -67,8 +65,7 @@ const DeleteDriver = async (req, res) => {
         })
     } catch (error) {
         res.status(500).json({
-            message: 'Error al eliminar el registro del conductor',
-            error: error.message
+            message: 'Error al eliminar el registro del conductor'
         })
     }
 }
@@ -82,8 +79,7 @@ const getDriversDetailed = async (req, res) => {
     res.status(200).json(drivers)
   } catch (error) {
     res.status(500).json({
-      message: 'Error al obtener la lista de conductores',
-      error: error.message
+      message: 'Error al obtener la lista de conductores'
     })
   }
 }
@@ -132,8 +128,7 @@ const getDriversWithUnits = async (req, res) => {
     res.status(200).json(Object.values(driversMap))
   } catch (error) {
     res.status(500).json({
-      message: 'Error al obtener conductores con unidades',
-      error: error.message
+      message: 'Error al obtener conductores con unidades'
     })
   }
 }

@@ -1,5 +1,9 @@
 const express = require('express')
+const compression = require('compression')
 const cors = require('cors')
+const helmet = require('helmet')
+const rateLimit = require('express-rate-limit')
+const cookieParser = require('cookie-parser')
 require('dotenv').config()
 
 const UserRoutes = require('./routes/userRoutes')
@@ -14,12 +18,52 @@ const BrandRoutes = require('./routes/brandRoutes')
 const RoleRoutes = require('./routes/roleRoutes')
 const ConductorRoutes = require('./routes/conductorRoutes')
 const AuthorizedInsurerRoutes = require('./routes/authorizedInsurerRoutes')
+const { globalErrorHandler } = require('./middleware/errorHandler')
 
 const app = express()
 
-app.use(cors())
-app.use(express.json({ limit: '50mb' }))
-app.use(express.urlencoded({ limit: '50mb', extended: true }))
+// Confiar en proxy inverso (Railway, Nginx, etc.) para IP real del cliente
+app.set('trust proxy', 1)
+
+// Seguridad: headers HTTP
+app.use(helmet())
+
+// Compresión Gzip para respuestas
+app.use(compression())
+
+// CORS restringido a orígenes permitidos
+const allowedOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(',').map(o => o.trim())
+  : ['http://localhost:3000']
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error('Origen no permitido por CORS'))
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}))
+
+// Parseo de cookies (para token httpOnly)
+app.use(cookieParser())
+
+// Rate limiting global: 1000 peticiones por ventana de 15 minutos por IP
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 1000,
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipFailedRequests: true,
+  message: { message: 'Demasiadas peticiones. Intenta de nuevo más tarde.' }
+})
+app.use(globalLimiter)
+
+app.use(express.json({ limit: '10mb' }))
+app.use(express.urlencoded({ limit: '10mb', extended: true }))
 
 // Middleware de registro de peticiones para depuración
 app.use((req, res, next) => {
@@ -47,5 +91,8 @@ app.get('/api/status', (req, res) => {
         entorno: 'Backend'
     })
 })
+
+// Middleware global de errores (debe ir después de las rutas)
+app.use(globalErrorHandler)
 
 module.exports = app

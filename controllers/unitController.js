@@ -23,8 +23,7 @@ const createUnit = async (req, res) => {
     res.status(201).json({ message: 'Unidad registrada', data: unit });
   } catch (error) {
     res.status(500).json({ 
-      message: 'Fallo en el servidor al registrar la unidad',
-      error: error.message 
+      message: 'Fallo en el servidor al registrar la unidad'
     });
   }
 };
@@ -47,8 +46,7 @@ const UpdateUnit = async (req, res) => {
 
   }catch(error){
     res.status(500).json({
-      message: 'Error en el servidor al actualizar la unidad',
-      error: error.message
+      message: 'Error en el servidor al actualizar la unidad'
     })
   }
 }
@@ -71,8 +69,7 @@ const DeleteUnit = async (req, res) => {
       });
     }
     res.status(500).json({
-      message: 'No se pudo eliminar la unidad debido a restricciones de integridad',
-      error: error.message
+      message: 'No se pudo eliminar la unidad debido a restricciones de integridad'
     });
   }
 };
@@ -83,8 +80,7 @@ const GetUnits = async (req, res) => {
     res.status(200).json(units)
   } catch (error) {
     res.status(500).json({ 
-      message: 'Error al obtener unidades',
-      error: error.message 
+      message: 'Error al obtener unidades'
     })
   }
 }
@@ -96,7 +92,7 @@ const GetUnitById = async (req, res) => {
     if (!unit) return res.status(404).json({ message: 'Unidad no encontrada' })
     res.status(200).json(unit)
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener unidad', error: error.message })
+    res.status(500).json({ message: 'Error al obtener unidad'})
   }
 }
 
@@ -136,8 +132,7 @@ const AssignDriverToUnit = async (req, res) => {
     })
   } catch (error) {
     res.status(500).json({
-      message: 'Error al asignar conductor a la unidad',
-      error: error.message
+      message: 'Error al asignar conductor a la unidad'
     })
   }
 }

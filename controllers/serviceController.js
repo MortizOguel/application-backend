@@ -81,8 +81,7 @@ const createService = async (req, res) => {
         console.error('Error:', error.message)
         console.error('Stack:', error.stack)
         res.status(500).json({
-            message: 'Error al crear la asignación',
-            error: error.message
+            message: 'Error al crear la asignación'
         })
     }
 }
@@ -93,8 +92,7 @@ const getAllServices = async (req, res) => {
         res.status(200).json(services)
     } catch (error) {
         res.status(500).json({
-            message: 'Error al obtener las asignaciones',
-            error: error.message
+            message: 'Error al obtener las asignaciones'
         })
     }
 }
@@ -111,8 +109,7 @@ const getServiceById = async (req, res) => {
         res.status(200).json(service)
     } catch (error) {
         res.status(500).json({
-            message: 'Error al obtener la asignación',
-            error: error.message
+            message: 'Error al obtener la asignación'
         })
     }
 }
@@ -156,8 +153,7 @@ const updateService = async (req, res) => {
         })
     } catch (error) {
         res.status(500).json({
-            message: 'Error al actualizar la asignación',
-            error: error.message
+            message: 'Error al actualizar la asignación'
         })
     }
 }
@@ -174,8 +170,7 @@ const deleteService = async (req, res) => {
         res.status(200).json({ message: 'Asignación eliminada exitosamente' })
     } catch (error) {
         res.status(500).json({
-            message: 'Error al eliminar la asignación',
-            error: error.message
+            message: 'Error al eliminar la asignación'
         })
     }
 }
@@ -187,8 +182,7 @@ const getActiveServicesByRoute = async (req, res) => {
         res.status(200).json(services)
     } catch (error) {
         res.status(500).json({
-            message: 'Error al verificar asignaciones activas',
-            error: error.message
+            message: 'Error al verificar asignaciones activas'
         })
     }
 }
@@ -199,8 +193,7 @@ const getMyServices = async (req, res) => {
         res.status(200).json(services)
     } catch (error) {
         res.status(500).json({
-            message: 'Error al obtener tus asignaciones',
-            error: error.message
+            message: 'Error al obtener tus asignaciones'
         })
     }
 }
