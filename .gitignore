@@ -1,0 +1,21 @@
+# Entorno
+.env
+.env.*.local
+.env.production
+
+# Dependencias
+node_modules/
+
+# Build
+build/
+dist/
+
+# Sistema
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+
+# Base de datos dump (binario)
+base_de_datos_SGCOT_DB.sql

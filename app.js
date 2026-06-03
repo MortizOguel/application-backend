@@ -25,8 +25,20 @@ const app = express()
 // Confiar en proxy inverso (Railway, Nginx, etc.) para IP real del cliente
 app.set('trust proxy', 1)
 
-// Seguridad: headers HTTP
-app.use(helmet())
+// Seguridad: headers HTTP con CSP explícito (anula el <meta> tag del frontend)
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com', 'https://fonts.gstatic.com'],
+      fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+      imgSrc: ["'self'", 'data:', 'https://*.tile.openstreetmap.org', 'https://raw.githubusercontent.com', 'https://cdnjs.cloudflare.com'],
+      connectSrc: ["'self'", 'https://router.project-osrm.org'],
+      frameSrc: ["'none'"],
+    }
+  }
+}))
 
 // Compresión Gzip para respuestas
 app.use(compression())
