@@ -2,8 +2,32 @@ const Route = require('../models/routeModel')
 const Service = require('../models/serviceModel')
 const Driver = require('../models/driverModel')
 
+const stripHtml = (str) => str.replace(/<[^>]*>/g, '')
+
 const CreateRoute = async (req, res) => {
     try {
+        const { name, origin, destination, details } = req.body
+
+        if (!name || typeof name !== 'string' || name.trim().length === 0) {
+            return res.status(400).json({ message: 'El nombre de la ruta es requerido' })
+        }
+        if (!origin || typeof origin !== 'string' || origin.trim().length === 0) {
+            return res.status(400).json({ message: 'El punto de inicio es requerido' })
+        }
+        if (!destination || typeof destination !== 'string' || destination.trim().length === 0) {
+            return res.status(400).json({ message: 'El punto de llegada es requerido' })
+        }
+
+        req.body.name = stripHtml(name.trim()).slice(0, 100)
+        req.body.origin = stripHtml(origin.trim()).slice(0, 100)
+        req.body.destination = stripHtml(destination.trim()).slice(0, 100)
+        if (details) req.body.details = stripHtml(details.trim()).slice(0, 500)
+
+        const existing = await Route.findByName(req.body.name)
+        if (existing.length > 0) {
+            return res.status(409).json({ message: 'Ya existe una ruta con este nombre' })
+        }
+
         const route = await Route.create(req.body)
         res.status(201).json({
             message: 'Ruta registrada exitosamente',
@@ -25,6 +49,20 @@ const UpdateRoute = async(req, res) => {
                 message: 'No se puede editar la ruta: tiene asignaciones vigentes en el dashboard'
             })
         }
+        const stripHtml = (str) => str.replace(/<[^>]*>/g, '')
+        if (req.body.name) req.body.name = stripHtml(req.body.name).trim().slice(0, 100)
+        if (req.body.origin) req.body.origin = stripHtml(req.body.origin).trim().slice(0, 100)
+        if (req.body.destination) req.body.destination = stripHtml(req.body.destination).trim().slice(0, 100)
+        if (req.body.details) req.body.details = stripHtml(req.body.details).trim().slice(0, 500)
+
+        const current = await Route.getById(id)
+        if (current && current.name !== req.body.name) {
+            const existing = await Route.findByName(req.body.name)
+            if (existing.length > 0) {
+                return res.status(409).json({ message: 'Ya existe una ruta con este nombre' })
+            }
+        }
+
         const UpdatedRoute = await Route.update(id, req.body)
         if(!UpdatedRoute) return res.status(404).json({
             message: 'Ruta no encontrada '
