@@ -122,13 +122,17 @@ delete: async (id) => {
     const query = `
       SELECT u.*, m.id_brand, b.brand_name as marca, m.model as modelo, l.name as line_name,
         air.name_authorized_insurer as insurer_rcv_name,
-        aip.name_authorized_insurer as insurer_personal_name
+        aip.name_authorized_insurer as insurer_personal_name,
+        du.first_name as driver_first_name, du.last_name as driver_last_name,
+        du.dni as driver_dni
       FROM units u 
       LEFT JOIN models m ON u.id_model = m.id_model
       LEFT JOIN brands b ON m.id_brand = b.id_brand
       LEFT JOIN lines l ON u.id_line = l.id_line
       LEFT JOIN authorized_insurer air ON u.id_authorized_insurer_rcv = air.id_authorized_insurer
       LEFT JOIN authorized_insurer aip ON u.id_authorized_insurer_personal = aip.id_authorized_insurer
+      LEFT JOIN drivers d ON u.id_driver = d.id_driver
+      LEFT JOIN users du ON d.id_user = du.id_user
       WHERE u.status != 'deleted'
       ORDER BY u.id_unit ASC
     `

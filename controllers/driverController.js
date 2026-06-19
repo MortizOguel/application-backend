@@ -133,4 +133,16 @@ const getDriversWithUnits = async (req, res) => {
   }
 }
 
-module.exports = { registerDriver, getDriversDetailed, DeleteDriver, updateDriverData, getDriversWithUnits }
+const getDriverById = async (req, res) => {
+  try {
+    const driver = await Driver.getByIdDriver(req.params.id)
+    if (!driver) {
+      return res.status(404).json({ message: 'Conductor no encontrado' })
+    }
+    res.status(200).json(driver)
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener el conductor' })
+  }
+}
+
+module.exports = { registerDriver, getDriversDetailed, DeleteDriver, updateDriverData, getDriversWithUnits, getDriverById }

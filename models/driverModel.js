@@ -111,6 +111,12 @@ const Driver = {
         return rows
     },
 
+    getByIdDriver: async (id_driver) => {
+        const query = `SELECT d.*, u.first_name, u.last_name, u.email, u.status, u.photo, u.id_rol, l.name as line_name FROM drivers d JOIN users u ON d.id_user = u.id_user LEFT JOIN lines l ON d.id_line = l.id_line WHERE d.id_driver = $1`
+        const { rows } = await pool.query(query, [id_driver])
+        return rows[0]
+    },
+
     getByIdUser: async (id_user) => {
         const query = `SELECT * FROM drivers WHERE id_user = $1`
         const { rows } = await pool.query(query, [id_user])
