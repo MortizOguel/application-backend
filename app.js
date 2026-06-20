@@ -18,6 +18,7 @@ const BrandRoutes = require('./routes/brandRoutes')
 const RoleRoutes = require('./routes/roleRoutes')
 const ConductorRoutes = require('./routes/conductorRoutes')
 const AuthorizedInsurerRoutes = require('./routes/authorizedInsurerRoutes')
+const NotificationRoutes = require('./routes/notificationRoutes')
 const { globalErrorHandler } = require('./middleware/errorHandler')
 
 const app = express()
@@ -95,6 +96,7 @@ app.use('/api/brands', BrandRoutes)
 app.use('/api/roles', RoleRoutes)
 app.use('/api/conductores', ConductorRoutes)
 app.use('/api/authorized-insurers', AuthorizedInsurerRoutes)
+app.use('/api/notifications', NotificationRoutes)
 
 app.get('/api/status', (req, res) => {
     res.json({
