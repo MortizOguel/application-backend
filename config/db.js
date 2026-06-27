@@ -1,5 +1,12 @@
-const { Pool } = require('pg')
+const { Pool, types } = require('pg')
 require('dotenv').config()
+
+// Sobrescribe el parser de timestamp without time zone (OID 1114)
+// para evitar que postgres-date convierta a Date usando la zona local
+// del servidor Node.js (típicamente UTC en hosting). Al serializar a JSON,
+// Date.prototype.toISOString() convierte a UTC, causando un shift de
+// 4-5 horas al ser interpretado por el frontend en UTC-4 (Venezuela).
+types.setTypeParser(1114, (val) => val.replace(' ', 'T'))
 
 const poolConfig = process.env.DATABASE_URL
   ? {
